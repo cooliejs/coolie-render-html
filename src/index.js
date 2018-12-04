@@ -141,7 +141,7 @@ module.exports = function (ast, options) {
                     return slice;
                 }
 
-                return node.value;
+                return '<!--' + node.value + '-->';
 
             default:
                 node = options.processTagNode(node);

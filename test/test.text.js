@@ -32,7 +32,7 @@ describe('文本', function () {
         })).toEqual(text);
     });
 
-    it('文本处理函数', function () {
+    it('处理函数', function () {
         var ast = [{
             type: 'text',
             value: 'a'

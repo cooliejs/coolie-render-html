@@ -13,16 +13,28 @@ var render = require('../src/index.js');
 describe('注释', function () {
 
     it('注释', function () {
-        let comment = '<!--    c     omment    -->';
         var ast = [{
             type: 'comment',
-            value: comment
+            value: 'a'
         }];
         expect(render(ast)).toEqual('');
         expect(render(ast, {
             removeComments: false
-        })).toEqual(comment);
+        })).toEqual('<!--a-->');
     });
 
+    it('处理函数', function () {
+        var ast = [{
+            type: 'comment',
+            value: 'a'
+        }];
+        expect(render(ast, {
+            processCommentNode: function (node) {
+                node.value = '[' + node.value + ']';
+                return node;
+            },
+            removeComments: false
+        })).toEqual('<!--[a]-->');
+    });
 });
 
