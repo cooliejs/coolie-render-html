@@ -34,7 +34,9 @@
   "bugs": {
     "url": "https://github.com/cooliejs/coolie-render-html/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "blear.utils.object": "^1.0.14"
+  },
   "peerDependencies": {},
   "devDependencies": {
     "chai-jasmine": "1.0.7",
