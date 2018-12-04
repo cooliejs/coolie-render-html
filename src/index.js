@@ -29,16 +29,16 @@ var defaults = {
     removeComments: true,
 
     /**
-     * 上述规则是否在 <textarea> 标签内生效，
+     * 上述规则是否在 <textarea> 标签内应用，
      * @type Boolean
      */
-    validInTextareaTag: true,
+    applyTextareaTag: true,
 
     /**
-     * 上述规则是否在 <template> 标签内生效
+     * 上述规则是否在 <template> 标签内应用
      * @type Boolean
      */
-    validInTemplateTag: true,
+    applyTemplateTag: true,
 
     /**
      * 处理标签节点

@@ -76,22 +76,59 @@ describe('标签', function () {
         })).toEqual('<a><STRONG>i</STRONG></a>');
     });
 
-    it('textarea 标签嵌套', function () {
+    it('textarea 标签嵌套：应用规则', function () {
+        var html = '<textarea a="b"><SPAN> c </SPAN></textarea>';
+        var tags = [];
         var ast = [{
             type: 'tag',
             name: 'textarea',
+            attrs: {},
             children: [{
                 type: 'tag',
                 name: 'SPAN',
                 children: [{
                     type: 'text',
-                    value: '  i   '
+                    value: ' c '
                 }]
             }]
         }];
         expect(render(ast, {
-            lowercaseTagName: false
-        })).toEqual('<textarea><SPAN>i</SPAN></textarea>');
+            lowercaseTagName: false,
+            processTagNode: function (tag) {
+                tags.push(tag.name);
+                return tag;
+            }
+        })).toEqual('<textarea><SPAN>c</SPAN></textarea>');
+        expect(tags.length).toBe(2);
+        expect(tags[0]).toBe('textarea');
+        expect(tags[1]).toBe('SPAN');
+    });
+
+    it('textarea 标签嵌套：不应用规则', function () {
+        var html = '<textarea a="b"><SPAN> c </SPAN></textarea>';
+        var tags = [];
+        var ast = [{
+            type: 'tag',
+            name: 'textarea',
+            attrs: {},
+            children: [{
+                type: 'tag',
+                name: 'SPAN',
+                children: [{
+                    type: 'text',
+                    value: ' c '
+                }]
+            }]
+        }];
+        expect(render(ast, {
+            applyTextareaTag: false,
+            processTagNode: function (tag) {
+                tags.push(tag.name);
+                return tag;
+            }
+        })).toEqual('<textarea><SPAN> c </SPAN></textarea>');
+        expect(tags.length).toBe(1);
+        expect(tags[0]).toBe('textarea');
     });
 
 });
