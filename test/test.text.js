@@ -38,7 +38,7 @@ describe('文本', function () {
             value: 'a'
         }];
         expect(render(ast, {
-            processTextNode: function (node) {
+            processText: function (node) {
                 node.value = '[' + node.value + ']';
                 return node;
             }

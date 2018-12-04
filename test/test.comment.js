@@ -29,7 +29,7 @@ describe('注释', function () {
             value: 'a'
         }];
         expect(render(ast, {
-            processCommentNode: function (node) {
+            processComment: function (node) {
                 node.value = '[' + node.value + ']';
                 return node;
             },

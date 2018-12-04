@@ -51,7 +51,7 @@ var defaults = {
      * @param tag
      * @returns {*}
      */
-    processTagNode: function (tag) {
+    processTag: function (tag) {
         return tag;
     },
 
@@ -61,7 +61,7 @@ var defaults = {
      * @param tag
      * @returns {*}
      */
-    processAttrNode: function (attr, tag) {
+    processAttr: function (attr, tag) {
         return attr;
     },
 
@@ -70,7 +70,7 @@ var defaults = {
      * @param comment
      * @returns {*}
      */
-    processCommentNode: function (comment) {
+    processComment: function (comment) {
         return comment;
     },
 
@@ -79,7 +79,7 @@ var defaults = {
      * @param text
      * @returns {*}
      */
-    processTextNode: function (text) {
+    processText: function (text) {
         return text;
     }
 };
@@ -129,7 +129,7 @@ module.exports = function (ast, options) {
         return name;
     };
     var renderText = function (node) {
-        node = options.processTextNode(node);
+        node = options.processText(node);
         var slice = node.value;
 
         if (options.trim) {
@@ -143,7 +143,7 @@ module.exports = function (ast, options) {
         return slice;
     };
     var renderComment = function (node) {
-        node = options.processCommentNode(node);
+        node = options.processComment(node);
 
         if (options.removeComments) {
             return '';
@@ -152,7 +152,7 @@ module.exports = function (ast, options) {
         return '<!--' + node.value + '-->';
     };
     var renderTag = function (node) {
-        node = options.processTagNode(node);
+        node = options.processTag(node);
         var tagName = node.name;
         var lowTag = tagName.toLowerCase();
 
@@ -167,7 +167,7 @@ module.exports = function (ast, options) {
                 value: desc.value,
                 quote: desc.quote
             };
-            attr = options.processAttrNode(attr, node);
+            attr = options.processAttr(attr, node);
 
             if (!attr) {
                 return;

@@ -37,7 +37,7 @@ describe('标签', function () {
         }];
         expect(render(ast)).toEqual('<a b="c" d=\'e\' f=g h></a>');
         expect(render(ast, {
-            processAttrNode: function (attr, tag) {
+            processAttr: function (attr, tag) {
                 if (attr.name === 'f') {
                     attr.value = 'gg';
                 }
@@ -66,7 +66,7 @@ describe('标签', function () {
         }];
         expect(render(ast, {
             lowercaseTagName: false,
-            processTagNode: function (tag) {
+            processTag: function (tag) {
                 if (/^span$/i.test(tag.name)) {
                     tag.name = 'STRONG';
                 }
@@ -107,7 +107,7 @@ describe('标签', function () {
         expect(render(ast, {
             lowercaseTagName: false,
             applyTextareaTag: true,
-            processTagNode: function (tag) {
+            processTag: function (tag) {
                 tags.push(tag.name);
                 return tag;
             }
@@ -153,7 +153,7 @@ describe('标签', function () {
         ast.html = html;
         expect(render(ast, {
             applyTextareaTag: false,
-            processTagNode: function (tag) {
+            processTag: function (tag) {
                 tags.push(tag.name);
                 return tag;
             }
@@ -197,7 +197,7 @@ describe('标签', function () {
         ast.html = html;
         expect(render(ast, {
             applyTextareaTag: false,
-            processTagNode: function (tag) {
+            processTag: function (tag) {
                 tags.push(tag.name);
                 return tag;
             }
