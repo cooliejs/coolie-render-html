@@ -1,0 +1,45 @@
+{
+  "name": "coolie-render-html",
+  "version": "1.0.0",
+  "description": "coolie 渲染器：html",
+  "scripts": {
+    "live": "browser-sync start --config bs-config.js",
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/**/test.*.js",
+    "test-travis": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/**/test.*.js --report lcovonly",
+    "prepublish": "npm test"
+  },
+  "preferGlobal": false,
+  "bin": {},
+  "engines": {
+    "node": ">=6.0.0",
+    "iojs": ">=1.0.0"
+  },
+  "main": "src/index.js",
+  "keywords": [
+    "coolie",
+    "cloudcome",
+    "ydr.me"
+  ],
+  "author": {
+    "name": "cloudcome",
+    "email": "cloudcome@163.com",
+    "url": "https://ydr.me"
+  },
+  "contributors": [],
+  "homepage": "https://github.com/cooliejs/coolie-render-html",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cooliejs/coolie-render-html"
+  },
+  "bugs": {
+    "url": "https://github.com/cooliejs/coolie-render-html/issues"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {
+    "chai-jasmine": "1.0.7",
+    "istanbul": "0.4.5",
+    "mocha": "4.0.1"
+  },
+  "license": "MIT"
+}
