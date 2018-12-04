@@ -28,7 +28,7 @@ describe('文本', function () {
         }];
         expect(render(ast)).toEqual('h e l l o');
         expect(render(ast, {
-            mergeContinuousBlanks: false
+            mergeWhitespace: false
         })).toEqual(text);
     });
 

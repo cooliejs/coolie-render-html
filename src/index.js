@@ -11,10 +11,16 @@ var object = require('blear.utils.object');
 
 var defaults = {
     /**
-     * 是否合并连续空白
+     * 是否剔除两端空白
      * @type Boolean
      */
-    mergeContinuousBlanks: true,
+    trim: true,
+
+    /**
+     * 是否合并空白为 1 个空白
+     * @type Boolean
+     */
+    mergeWhitespace: true,
 
     /**
      * 是否小写标签名
@@ -126,8 +132,12 @@ module.exports = function (ast, options) {
         node = options.processTextNode(node);
         var slice = node.value;
 
-        if (options.mergeContinuousBlanks) {
-            slice = slice.trim().replace(/\s+/g, ' ');
+        if (options.trim) {
+            slice = slice.trim();
+        }
+
+        if (options.mergeWhitespace) {
+            slice = slice.replace(/\s+/g, ' ');
         }
 
         return slice;
