@@ -36,6 +36,19 @@ describe('标签', function () {
             }
         }];
         expect(render(ast)).toEqual('<a b="c" d=\'e\' f=g h></a>');
+        expect(render(ast, {
+            processAttrNode: function (attr, tag) {
+                if (attr.name === 'f') {
+                    attr.value = 'gg';
+                }
+
+                if (attr.name === 'h') {
+                    return;
+                }
+
+                return attr;
+            }
+        })).toEqual('<a b="c" d=\'e\' f=gg></a>');
     });
 
     it('标签嵌套', function () {
@@ -52,8 +65,15 @@ describe('标签', function () {
             }]
         }];
         expect(render(ast, {
-            lowercaseTagName: false
-        })).toEqual('<a><SPAN>i</SPAN></a>');
+            lowercaseTagName: false,
+            processTagNode: function (tag) {
+                if (/^span$/i.test(tag.name)) {
+                    tag.name = 'STRONG';
+                }
+
+                return tag;
+            }
+        })).toEqual('<a><STRONG>i</STRONG></a>');
     });
 
     it('textarea 标签嵌套', function () {

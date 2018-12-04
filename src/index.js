@@ -52,9 +52,10 @@ var defaults = {
     /**
      * 处理属性节点
      * @param attr
+     * @param tag
      * @returns {*}
      */
-    processAttrNode: function (attr) {
+    processAttrNode: function (attr, tag) {
         return attr;
     },
 
@@ -159,7 +160,7 @@ module.exports = function (ast, options) {
                         value: desc.value,
                         quote: desc.quote
                     };
-                    attr = options.processAttrNode(attr);
+                    attr = options.processAttrNode(attr, node);
 
                     if (!attr) {
                         return;
