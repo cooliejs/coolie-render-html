@@ -77,56 +77,87 @@ describe('标签', function () {
     });
 
     it('textarea 标签嵌套：应用规则', function () {
-        var html = '<textarea a="b"><SPAN> c </SPAN></textarea>';
+        var html = '<textarea a="b"><SPAN> c </SPAN><SPAN> d </SPAN></textarea>';
         var tags = [];
         var ast = [{
             type: 'tag',
             name: 'textarea',
-            attrs: {},
+            attrs: {
+                a: {
+                    value: 'b',
+                    quote: '"'
+                }
+            },
             children: [{
                 type: 'tag',
                 name: 'SPAN',
                 children: [{
                     type: 'text',
                     value: ' c '
+                }]
+            }, {
+                type: 'tag',
+                name: 'span',
+                children: [{
+                    type: 'text',
+                    value: ' d '
                 }]
             }]
         }];
         expect(render(ast, {
             lowercaseTagName: false,
+            applyTextareaTag: true,
             processTagNode: function (tag) {
                 tags.push(tag.name);
                 return tag;
             }
-        })).toEqual('<textarea><SPAN>c</SPAN></textarea>');
-        expect(tags.length).toBe(2);
+        })).toEqual('<textarea a="b"><SPAN>c</SPAN><span>d</span></textarea>');
+        expect(tags.length).toBe(3);
         expect(tags[0]).toBe('textarea');
         expect(tags[1]).toBe('SPAN');
+        expect(tags[2]).toBe('span');
     });
 
     it('textarea 标签嵌套：不应用规则', function () {
-        var html = '<textarea a="b"><SPAN> c </SPAN></textarea>';
+        var html = '<textarea a="b"><SPAN> c </SPAN><SPAN> d </SPAN></textarea>';
         var tags = [];
         var ast = [{
             type: 'tag',
             name: 'textarea',
-            attrs: {},
+            attrs: {
+                a: {
+                    value: 'b',
+                    quote: '"'
+                }
+            },
             children: [{
                 type: 'tag',
                 name: 'SPAN',
                 children: [{
                     type: 'text',
                     value: ' c '
-                }]
+                }],
+                start: 16,
+                end: 32
+            }, {
+                type: 'tag',
+                name: 'span',
+                children: [{
+                    type: 'text',
+                    value: ' d '
+                }],
+                start: 32,
+                end: 48
             }]
         }];
+        ast.html = html;
         expect(render(ast, {
             applyTextareaTag: false,
             processTagNode: function (tag) {
                 tags.push(tag.name);
                 return tag;
             }
-        })).toEqual('<textarea><SPAN> c </SPAN></textarea>');
+        })).toEqual(html);
         expect(tags.length).toBe(1);
         expect(tags[0]).toBe('textarea');
     });

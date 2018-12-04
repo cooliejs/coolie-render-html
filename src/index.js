@@ -32,13 +32,13 @@ var defaults = {
      * 上述规则是否在 <textarea> 标签内应用，
      * @type Boolean
      */
-    applyTextareaTag: true,
+    applyTextareaTag: false,
 
     /**
      * 上述规则是否在 <template> 标签内应用
      * @type Boolean
      */
-    applyTemplateTag: true,
+    applyTemplateTag: false,
 
     /**
      * 处理标签节点
@@ -86,14 +86,14 @@ var defaults = {
  */
 module.exports = function (ast, options) {
     options = object.assign({}, defaults, options);
-    var traveler = function (list, plain) {
+    var traveler = function (list) {
         if (!(list && list.length > 0)) {
             return '';
         }
 
         var html = '';
         list.forEach(function (node) {
-            html += render(node, plain);
+            html += render(node);
         });
         return html;
     };
@@ -122,61 +122,78 @@ module.exports = function (ast, options) {
 
         return name;
     };
-    var render = function (node, plain) {
+    var renderText = function (node) {
+        node = options.processTextNode(node);
+        var slice = node.value;
+
+        if (options.mergeContinuousBlanks) {
+            slice = slice.trim().replace(/\s+/g, ' ');
+        }
+
+        return slice;
+    };
+    var renderComment = function (node) {
+        node = options.processCommentNode(node);
+
+        if (options.removeComments) {
+            return '';
+        }
+
+        return '<!--' + node.value + '-->';
+    };
+    var renderTag = function (node) {
+        node = options.processTagNode(node);
+        var tagName = node.name;
+        var lowTag = tagName.toLowerCase();
+
+        if (options.lowercaseTagName) {
+            tagName = tagName.toLowerCase();
+        }
+
+        var before = '<' + tagName;
+        object.each(node.attrs, function (name, desc) {
+            var attr = {
+                name: name,
+                value: desc.value,
+                quote: desc.quote
+            };
+            attr = options.processAttrNode(attr, node);
+
+            if (!attr) {
+                return;
+            }
+
+            before += ' ' + attribute(attr);
+        });
+        before += '>';
+        var after = '</' + tagName + '>';
+
+        if (lowTag === 'textarea' && !options.applyTextareaTag) {
+            return before + renderInner(node) + after;
+        }
+
+        if (lowTag === 'template' && !options.applyTemplateTag) {
+            return before + renderInner(node) + after;
+        }
+
+        return before + traveler(node.children) + after;
+    };
+    var renderInner = function (node) {
+        var start = node.children[0].start;
+        var end = node.children[node.children.length - 1].end;
+        return ast.html.slice(start, end);
+    };
+    var render = function (node) {
         var slice = '';
         switch (node.type) {
             case 'text':
-                node = options.processTextNode(node);
-                slice = node.value;
-
-                if (options.mergeContinuousBlanks) {
-                    slice = slice.trim().replace(/\s+/g, ' ');
-                }
-
-                return slice;
+                return renderText(node);
 
             case 'comment':
-                node = options.processCommentNode(node);
-
-                if (options.removeComments) {
-                    return slice;
-                }
-
-                return '<!--' + node.value + '-->';
+                return renderComment(node);
 
             default:
-                node = options.processTagNode(node);
-                var tagName = node.name;
-                var willPlain = /(textarea|template)/i.test(tagName);
-
-                if (options.lowercaseTagName) {
-                    tagName = tagName.toLowerCase();
-                }
-
-                var before = '<' + tagName;
-                object.each(node.attrs, function (name, desc) {
-                    var attr = {
-                        name: name,
-                        value: desc.value,
-                        quote: desc.quote
-                    };
-                    attr = options.processAttrNode(attr, node);
-
-                    if (!attr) {
-                        return;
-                    }
-
-                    before += ' ' + attribute(attr);
-                });
-                before += '>';
-                var after = '</' + tagName + '>';
-
-                switch (tagName.toLowerCase()) {
-                    default:
-                        slice += before + traveler(node.children, willPlain) + after;
-                        break;
-                }
-                return slice;
+                return renderTag(node);
         }
     };
 
