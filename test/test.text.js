@@ -29,7 +29,7 @@ describe('文本', function () {
         expect(render(ast)).toEqual('h e l l o');
         expect(render(ast, {
             mergeWhitespace: false
-        })).toEqual(text);
+        })).toEqual('h  e        l      l  o');
     });
 
     it('处理函数', function () {
