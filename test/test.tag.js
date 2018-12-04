@@ -162,5 +162,49 @@ describe('标签', function () {
         expect(tags[0]).toBe('textarea');
     });
 
+    it('template 标签嵌套：不应用规则', function () {
+        var html = '<template a="b"><SPAN> c </SPAN><SPAN> d </SPAN></template>';
+        var tags = [];
+        var ast = [{
+            type: 'tag',
+            name: 'template',
+            attrs: {
+                a: {
+                    value: 'b',
+                    quote: '"'
+                }
+            },
+            children: [{
+                type: 'tag',
+                name: 'SPAN',
+                children: [{
+                    type: 'text',
+                    value: ' c '
+                }],
+                start: 16,
+                end: 32
+            }, {
+                type: 'tag',
+                name: 'span',
+                children: [{
+                    type: 'text',
+                    value: ' d '
+                }],
+                start: 32,
+                end: 48
+            }]
+        }];
+        ast.html = html;
+        expect(render(ast, {
+            applyTextareaTag: false,
+            processTagNode: function (tag) {
+                tags.push(tag.name);
+                return tag;
+            }
+        })).toEqual(html);
+        expect(tags.length).toBe(1);
+        expect(tags[0]).toBe('template');
+    });
+
 });
 
